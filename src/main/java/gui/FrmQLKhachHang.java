@@ -17,16 +17,16 @@ import model.KhachHang;
 
 /**
  *
- * Họ tên sinh viên: 
+ * Họ tên sinh viên:
  */
 public class FrmQLKhachHang extends JFrame {
 
-    private JTable tblKhachHang;  
+    private JTable tblKhachHang;
     private JButton btDocFile, btGhiFile;
 
     private DefaultTableModel model;
     private JTextField txtMax, txtMin, txtTB;
-  
+
     private JCheckBox chkSapXep;
 
     private static final String FILE_NHAP = "input.txt";
@@ -47,7 +47,7 @@ public class FrmQLKhachHang extends JFrame {
     private void createGUI() {
 
         //tạo JTable
-        String[] columnNames = {"Mã số", "Họ tên chủ hộ","Số nhân khẩu", "Chỉ số cũ (m3)", "Chỉ số mới(m3)","Tiêu thụ(m3)","Vượt định mức", "Tiền trả(đồng)"};
+        String[] columnNames = {"Mã số", "Họ tên chủ hộ", "Số nhân khẩu", "Chỉ số cũ (m3)", "Chỉ số mới(m3)", "Tiêu thụ(m3)", "Vượt định mức", "Tiền trả(đồng)"};
         model = new DefaultTableModel(null, columnNames);
         tblKhachHang = new JTable(model);
         //canh lề cho cột trong JTable
@@ -55,11 +55,11 @@ public class FrmQLKhachHang extends JFrame {
         rightRender.setHorizontalAlignment(JLabel.RIGHT);
         DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
         centerRender.setHorizontalAlignment(JLabel.CENTER);
-        
+
         tblKhachHang.getColumnModel().getColumn(6).setCellRenderer(centerRender);
         tblKhachHang.getColumnModel().getColumn(7).setCellRenderer(rightRender);
         //tạo thành phần quản lý cuộn cho Jtable
-        JScrollPane scrollTable = new JScrollPane(tblKhachHang);      
+        JScrollPane scrollTable = new JScrollPane(tblKhachHang);
         //tạo các điều khiển nhập liệu  và các nút lệnh
         JPanel p1 = new JPanel();
 
@@ -69,12 +69,13 @@ public class FrmQLKhachHang extends JFrame {
         JPanel p2 = new JPanel();
         p2.add(new JLabel("Mức tiêu thụ thấp nhất:"));
         p2.add(txtMin = new JTextField(10));
+//        txtMin.setText(String.valueOf(qlkh.getTieuThuThapNhat()));
+
         p2.add(new JLabel("Mức tiêu thụ cao nhất:"));
         p2.add(txtMax = new JTextField(10));
-               
-        p2.add(new JLabel("Mức tiêu thụ trung bình:" ));
+
+        p2.add(new JLabel("Mức tiêu thụ trung bình:"));
         p2.add(txtTB = new JTextField(10));
-        
         p2.add(chkSapXep = new JCheckBox("Sắp xếp"));
 
         //add các thành phần vào cửa sổ
@@ -82,14 +83,17 @@ public class FrmQLKhachHang extends JFrame {
         add(scrollTable, BorderLayout.CENTER);
         add(p2, BorderLayout.SOUTH);
 
-    } 
+    }
 
     private void processEvent() {
         btDocFile.addActionListener((e) -> {
             qlkh.DocKhachHang(FILE_NHAP);
+            txtTB.setText(String.valueOf(qlkh.getTieuThuTrungBinh()));
+            txtMin.setText(String.valueOf(qlkh.getTieuThuThapNhat()));
+
             loadDataToJTable();
         });
-        
+
         btGhiFile.addActionListener((e) -> {
             if (qlkh.GhiHoaDon(FILE_XUAT)) {
                 JOptionPane.showMessageDialog(this, "Đã ghi dữ liệu thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -97,24 +101,21 @@ public class FrmQLKhachHang extends JFrame {
                 JOptionPane.showMessageDialog(this, "Đã ghi dữ liệu thất bại", "Thông báo", JOptionPane.ERROR_MESSAGE);
             }
         });
-         chkSapXep.addItemListener((e) -> {
+        chkSapXep.addItemListener((e) -> {
 
             if (chkSapXep.isSelected()) {
                 qlkh.sapXepTheoMucTieuThu();
                 loadDataToJTable();
             }
         });
-              
-         
+
     }
 
     private void loadDataToJTable() {
-model.setRowCount(0);
+        model.setRowCount(0);
         for (KhachHang kh : qlkh.getDsKhachHang()) {
-            model.addRow(new Object[]{kh.getMaso(), kh.getHoten(),kh.getSonhankhau(), kh.getChisocu(), kh.getChisomoi(), kh.getTieuThu(),kh.getTieuThu()>kh.getDinhMuc()? "X" : ""});
-        }    }
+            model.addRow(new Object[]{kh.getMaso(), kh.getHoten(), kh.getSonhankhau(), kh.getChisocu(), kh.getChisomoi(), kh.getTieuThu(), kh.getTieuThu() > kh.getDinhMuc() ? "X" : ""});
+        }
+    }
 
-    
-
-    
 }
